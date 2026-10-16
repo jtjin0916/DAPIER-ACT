@@ -112,7 +112,7 @@ Do not silently reimplement the ACT backend and assume old checkpoint compatibil
 - [x] stale-data watchdog scaffold
 - [x] coordinate/crop tests
 - [x] Sim-to-Real validation docs
-- [ ] verified ACT/CVAE backend migrated from the working RoboTwin code
+- [x] verified working ACT/CVAE runtime migrated from the active RoboTwin reference
 - [ ] standalone public training command
 - [ ] standalone RoboTwin evaluation command
 - [ ] checkpoint-equivalence regression test
@@ -407,3 +407,78 @@ raw 20 x 12 action chunk
 ```
 
 Only after these regression checks pass should the clean public implementation replace the reference implementation.
+
+## Verified public Custom ACT runtime
+
+The active DP3-head Custom ACT source is now installed under `dapier_act/`
+as a behavior-preserving copy of the verified RoboTwin implementation.
+
+Verified architecture:
+
+```text
+Head PointCloud:
+Task crop -> candidates <=8192 -> metric FPS512
+-> train limits normalization [-1,1]
+-> 3->64->128->256 + LayerNorm/ReLU
+-> max pool -> 1 token
+
+Left Wrist RGB:
+240x320 RGB [0,1] -> independent ResNet18 -> 80 tokens
+
+Right Wrist RGB:
+240x320 RGB [0,1] -> independent ResNet18 -> 80 tokens
+
+Context:
+latent 1 + qpos 1 + head 1 + left 80 + right 80
+= 163 x 256
+
+ACT/CVAE:
+latent 32
+8 attention heads
+4-layer context encoder
+4-layer action decoder
+20 learned action queries
+-> 20 x 12 action chunk
+```
+
+The former provisional `dapier_act/model/` scaffold is retained under
+`experimental/provisional_model_scaffold/` for history, but it is not the
+active checkpoint-compatible implementation.
+
+Remaining validation gates:
+
+- strict-load the existing v4 checkpoint,
+- compare actual HDF5 RGB decoding against XPolicyLab `decode_image_bit`,
+- freeze an episode/timestep and compare model-ready tensors,
+- evaluate temporal aggregation variants,
+- verify RoboTwin standalone evaluation,
+- calibrate and validate real SO-101 observation/action semantics.
+
+## Wrist RGB contract
+
+RGB decoding is now explicit because an audit found a reproducible channel
+mismatch between the historical DAPIER HDF5 loader and the current local
+XPolicyLab runtime decoder.
+
+Both the v4 wooden-block corpus and the marker corpus satisfy:
+
+```text
+historical loader vs XPolicyLab decoder
+exactly equal: false
+R/B swap equal: true
+```
+
+New/generalized training therefore defaults to:
+
+```text
+--rgb-decode-mode xpolicylab_rgb
+```
+
+Historical v4 training tensors can be reproduced explicitly with:
+
+```text
+--rgb-decode-mode historical_bgr2rgb
+```
+
+New checkpoints store the selected RGB decode contract in metadata. The
+frozen `reference/` implementation is intentionally unchanged.
