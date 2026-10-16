@@ -4,10 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dapier-act"
-version = "0.1.0"
-description = "Multimodal ACT research scaffold for dual SO-101 manipulation"
+version = "0.2.0"
+description = "Multimodal ACT for dual SO-101 manipulation with DP3-inspired head PointCloud encoding"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.24", "torch>=2.1", "torchvision>=0.16", "PyYAML>=6.0"]
+dependencies = [
+  "numpy>=1.24",
+  "torch>=2.1",
+  "torchvision>=0.16",
+  "h5py>=3.8",
+  "opencv-python>=4.8",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7,<9",
+]
 
 [tool.setuptools.packages.find]
 include = ["dapier_act*"]

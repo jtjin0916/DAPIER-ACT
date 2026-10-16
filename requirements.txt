@@ -1,5 +1,7 @@
 numpy>=1.24
 torch>=2.1
 torchvision>=0.16
+h5py>=3.8
+opencv-python>=4.8
 PyYAML>=6.0
-pytest>=7
+pytest>=7,<9
