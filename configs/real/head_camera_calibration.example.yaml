@@ -1,0 +1,24 @@
+intrinsics:
+  fx: REPLACE
+  fy: REPLACE
+  cx: REPLACE
+  cy: REPLACE
+  width: REPLACE
+  height: REPLACE
+
+depth:
+  scale_to_meters: REPLACE
+
+frames:
+  camera: head_camera
+  base: robot_base
+  task: task
+
+# Convention: T_A_B maps B -> A.
+T_base_camera:
+  translation_m: [REPLACE, REPLACE, REPLACE]
+  quaternion_xyzw: [REPLACE, REPLACE, REPLACE, REPLACE]
+
+T_task_base:
+  translation_m: [REPLACE, REPLACE, REPLACE]
+  quaternion_xyzw: [REPLACE, REPLACE, REPLACE, REPLACE]

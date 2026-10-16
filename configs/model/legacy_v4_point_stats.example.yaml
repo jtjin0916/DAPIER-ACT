@@ -1,0 +1,14 @@
+warning: >
+  These values came from one legacy v4 training dataset. They are examples only.
+  Do not reuse them for a newly trained marker/generalization checkpoint unless
+  checkpoint metadata explicitly references these exact values.
+
+pointcloud_min:
+  - 0.030199378728866577
+  - -0.15336677432060242
+  - 0.0050008296966552734
+
+pointcloud_max:
+  - 0.2908546030521393
+  - 0.15257608890533447
+  - 0.263857364654541

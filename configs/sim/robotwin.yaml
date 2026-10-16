@@ -1,0 +1,13 @@
+task_frame:
+  semantics:
+    x: forward
+    y: left
+    z: up
+
+legacy_world_to_task:
+  note: Simulation-only legacy mapping; do not copy to hardware.
+  origin_world_m: [0.0, -0.35, 0.74]
+  mapping:
+    X_task: Y_world + 0.35
+    Y_task: -X_world
+    Z_task: Z_world - 0.74

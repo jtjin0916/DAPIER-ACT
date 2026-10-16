@@ -1,0 +1,39 @@
+model:
+  name: dapier_act_generalization_ready
+  embedding_dim: 256
+  chunk_size: 20
+  state_dim: 12
+  action_dim: 12
+
+point_encoder:
+  type: dp3_inspired_global
+  mlp_channels: [3, 64, 128, 256]
+  num_points: 512
+
+image_encoder:
+  type: independent_resnet18
+  pretrained: true
+  projection_dim: 256
+  expected_feature_hw: [8, 10]  # verify if image preprocessing changes
+
+pointcloud:
+  frame: task
+  candidate_points: 8192
+  crop:
+    x: [0.00, 0.40]
+    y: [-0.25, 0.25]
+    z: [0.005, 0.30]
+  normalization:
+    type: checkpoint_minmax
+    stats_file: REQUIRED_FROM_CHECKPOINT
+
+rgb:
+  channel_order: RGB
+  dtype: float32
+  range: [0.0, 1.0]
+  input_hw: [240, 320]
+  backbone_normalization: VERIFY_AGAINST_TRAINING_CODE
+
+backend:
+  type: existing_act_cvae
+  compatibility: MUST_BE_VERIFIED_WITH_LEGACY_CHECKPOINT
